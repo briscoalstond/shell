@@ -1,0 +1,14 @@
+class DynamicMethods
+  def self.create_method(name, &block)
+    define_method(name, &block)
+  end
+end
+
+class Example < DynamicMethods
+  create_method(:greet) do |name|
+    "Hello, #{name}!"
+  end
+end
+
+example = Example.new
+puts example.greet("Ruby")  # 输出: Hello, Ruby!
