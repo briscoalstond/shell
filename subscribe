@@ -1,0 +1,5 @@
+web3.eth.subscribe('newBlockHeaders', (error, blockHeader) => {
+    if (!error) {
+        console.log('New block:', blockHeader.number);
+    }
+});
