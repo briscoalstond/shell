@@ -1,0 +1,33 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class Product {
+    public int Id { get; set; }
+    public string Category { get; set; }
+    public double Price { get; set; }
+}
+
+public class Program {
+    public static void Main() {
+        List<Product> products = new List<Product> {
+            new Product { Id = 1, Category = "Electronics", Price = 299.99 },
+            new Product { Id = 2, Category = "Electronics", Price = 99.99 },
+            new Product { Id = 3, Category = "Books", Price = 19.99 },
+            new Product { Id = 4, Category = "Books", Price = 29.99 },
+            new Product { Id = 5, Category = "Clothing", Price = 49.99 }
+        };
+
+        var grouped = from p in products
+                      group p by p.Category into g
+                      select new {
+                          Category = g.Key,
+                          TotalPrice = g.Sum(x => x.Price),
+                          AveragePrice = g.Average(x => x.Price)
+                      };
+
+        foreach (var group in grouped) {
+            Console.WriteLine($"Category: {group.Category}, Total: {group.TotalPrice}, Average: {group.AveragePrice}");
+        }
+    }
+}
