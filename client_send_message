@@ -1,0 +1,12 @@
+import socket
+
+def client_send_message(host='127.0.0.1', port=9999, message="Hello, Server!"):
+    client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client.connect((host, port))
+    client.sendall(message.encode())
+    response = client.recv(4096)
+    print("服务器响应:", response.decode())
+    client.close()
+
+if __name__ == "__main__":
+    client_send_message()
