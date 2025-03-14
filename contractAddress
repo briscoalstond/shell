@@ -1,0 +1,31 @@
+const Web3 = require('web3');
+const web3 = new Web3('https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID');
+
+// 填入合约 ABI 与地址
+const abi = [/* 合约 ABI 数组 */];
+const contractAddress = '0xYourContractAddress';
+const contract = new web3.eth.Contract(abi, contractAddress);
+
+async function depositFunds(amountInEther, fromAddress, privateKey) {
+    const value = web3.utils.toWei(amountInEther, 'ether');
+    const tx = contract.methods.deposit();
+    const gas = await tx.estimateGas({ from: fromAddress, value });
+    const gasPrice = await web3.eth.getGasPrice();
+    const data = tx.encodeABI();
+    const nonce = await web3.eth.getTransactionCount(fromAddress);
+
+    const signedTx = await web3.eth.accounts.signTransaction({
+        to: contractAddress,
+        data,
+        gas,
+        gasPrice,
+        nonce,
+        value
+    }, privateKey);
+
+    const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+    console.log('Transaction receipt:', receipt);
+}
+
+// 示例调用
+depositFunds('0.1', '0xYourAddress', 'your_private_key');
