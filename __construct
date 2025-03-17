@@ -1,0 +1,37 @@
+<?php
+trait Logger {
+    public function log($message) {
+        echo "[LOG]: " . $message . "\n";
+    }
+}
+
+class Database {
+    use Logger;
+    private $pdo;
+
+    public function __construct($dsn, $username, $password) {
+        try {
+            $this->pdo = new PDO($dsn, $username, $password);
+            $this->log("数据库连接成功");
+        } catch (PDOException $e) {
+            $this->log("数据库连接失败: " . $e->getMessage());
+            exit;
+        }
+    }
+
+    public function query($sql) {
+        $stmt = $this->pdo->prepare($sql);
+        if ($stmt->execute()) {
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            $this->log("查询失败");
+            return [];
+        }
+    }
+}
+
+// 使用示例
+$db = new Database("mysql:host=localhost;dbname=testdb;charset=utf8", "username", "password");
+$result = $db->query("SELECT * FROM users");
+print_r($result);
+?>
