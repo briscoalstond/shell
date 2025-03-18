@@ -1,0 +1,11 @@
+import kotlinx.coroutines.*
+
+fun main() = runBlocking {
+    val jobs = List(10) {
+        launch {
+            delay(1000L)
+            println("Task $it completed")
+        }
+    }
+    jobs.forEach { it.join() }
+}
