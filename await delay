@@ -1,0 +1,9 @@
+async function asyncTask() {
+    console.log('Task started');
+    await delay(1000);
+    console.log('Task completed after 1 second');
+}
+
+asyncTask().then(() => {
+    console.log('Async task finished');
+});
