@@ -1,0 +1,12 @@
+WITH RECURSIVE EmployeeHierarchy AS (
+    SELECT id, name, manager_id, 1 AS level
+    FROM employees
+    WHERE manager_id IS NULL
+    UNION ALL
+    SELECT e.id, e.name, e.manager_id, eh.level + 1
+    FROM employees e
+    JOIN EmployeeHierarchy eh ON e.manager_id = eh.id
+)
+SELECT id, name, level,
+       RANK() OVER (PARTITION BY level ORDER BY name) AS rank_in_level
+FROM EmployeeHierarchy;
