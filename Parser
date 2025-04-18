@@ -1,0 +1,27 @@
+import Control.Applicative
+import Data.Char
+
+newtype Parser a = Parser { parse :: String -> [(a, String)] }
+
+instance Functor Parser where
+  fmap f (Parser p) = Parser $ \input -> [(f v, out) | (v, out) <- p input]
+
+instance Applicative Parser where
+  pure v = Parser $ \input -> [(v, input)]
+  (Parser pf) <*> (Parser px) = Parser $ \input ->
+    [ (f x, out2) | (f, out1) <- pf input, (x, out2) <- px out1 ]
+
+instance Alternative Parser where
+  empty = Parser $ const []
+  (Parser p1) <|> (Parser p2) = Parser $ \input ->
+    p1 input ++ p2 input
+
+charP :: Char -> Parser Char
+charP c = Parser $ \input -> case input of
+  (x:xs) | x == c -> [(x, xs)]
+  _               -> []
+
+stringP :: String -> Parser String
+stringP = traverse charP
+
+main = print $ parse (stringP "hello") "hello world"
